@@ -93,3 +93,6 @@ if __name__ == "__main__":
     MSA(data_dir, mode)
     end = time.time()
     print('Running time: %s Seconds' % (end - start))
+    save_time_dir = './result/time_' + mode
+    with open(save_time_dir, 'w') as f:
+        f.write('Running time: %s Seconds' % (end - start))
