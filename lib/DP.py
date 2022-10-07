@@ -10,7 +10,7 @@ class DP:
         path = []
         i = m
         j = n
-        while(i!=0 and j!=0):
+        while i != 0 or j != 0:
             if i == 0 and j > 0:
                 path.append(2)
                 j = j - 1
@@ -39,7 +39,7 @@ class DP:
         i = m
         j = n
         k = l
-        while (i != 0 and j != 0 and k != 0):
+        while i != 0 or j != 0 or k != 0:
             if i == 0 and j > 0 and k > 0:
                 last_min = min(map[i][j - 1][k - 1], map[i][j][k - 1], map[i][j - 1][k])
                 if last_min == map[i][j - 1][k - 1]:
@@ -238,7 +238,7 @@ class DP:
         search_map = self.get_map_three(q1, q2, q0)
         path = self.get_path_three(search_map, m, n, l)
         q_1, q_2, q_0 = get_query_from_path_three(path, q1, q2, q0)
-        return q_1, q_2 ,q_0
+        return q_1, q_2, q_0
 
     def pairwise(self, database, query):
         q1_list = []
