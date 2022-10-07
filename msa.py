@@ -89,6 +89,9 @@ if __name__ == "__main__":
     data_dir["query"] = "MSA_query.txt"
     mode = args.mode
 
+    if not os.path.exists('./result'):
+        os.mkdir('./result')
+
     start = time.time()
     MSA(data_dir, mode)
     end = time.time()
