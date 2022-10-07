@@ -1,21 +1,26 @@
 import numpy as np
 from tqdm import tqdm
 from lib.utils import compute_cost, get_query_from_path_pairwise, get_query_from_path_three
-
+from lib.external import genetic_main
 
 
 class genetic:
 
 
     def Align_pairwise(self, q1, q2):
-
-        q_1, q_2 = get_query_from_path_pairwise(path, q1, q2)
-        return q_1, q_2
+        q = []
+        q.append(q1)
+        q.append(q2)
+        a = genetic_main(2, q)
+        return a[0], a[1]
 
     def Align_three(self, q1, q2, q0):
-
-        q_1, q_2, q_0 = get_query_from_path_three(path, q1, q2, q0)
-        return q_1, q_2, q_0
+        q = []
+        q.append(q1)
+        q.append(q2)
+        q.append(q0)
+        a = genetic_main(3, q)
+        return a[0], a[1], a[2]
 
     def pairwise(self, database, query):
         q1_list = []
