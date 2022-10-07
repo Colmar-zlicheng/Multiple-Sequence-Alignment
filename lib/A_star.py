@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from lib.utils import compute_cost, get_map_pairwise, get_query_from_path_pairwise, get_map_three, get_query_from_path_three
+from lib.utils import compute_cost, get_query_from_path_pairwise, get_query_from_path_three
 
 
 class order_seq_pairwise():  # ascending
@@ -81,10 +81,8 @@ class order_seq_three():  # ascending
             return False
 
 
-def A_star_pairwise(pos_start, pos_end, map):
+def A_star_pairwise(pos_start, pos_end, q1, q2, m, n):
 
-    map_width = len(map[0])
-    map_height = len(map)
     open_list = order_seq_pairwise()
     close_list = []
     open_list.append((0, 0, pos_start))
@@ -102,21 +100,31 @@ def A_star_pairwise(pos_start, pos_end, map):
         x = temp_tuple[2][0]
         y = temp_tuple[2][1]
 
-        if y + 1 < map_width and (x, y + 1) not in close_list:  # right
-            New_G = G + map[x][y + 1]
+        gap = 3
+        error = 4
+
+        if y + 1 < n and (x, y + 1) not in close_list:  # right
+            New_G = G + gap
             New_H = abs(pos_end[0] - x) + abs(pos_end[1] - (y + 1))
+            New_H = New_H // 2
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x, y + 1))
             open_list.append(New_tuple, pos)
-        if x + 1 < map_height and (x + 1, y) not in close_list:  # down
-            New_G = G + map[x + 1][y]
+        if x + 1 < m and (x + 1, y) not in close_list:  # down
+            New_G = G + gap
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - y)
+            New_H = New_H // 2
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y))
             open_list.append(New_tuple, pos)
-        if x + 1 < map_height and y + 1 < map_width and (x + 1, y + 1) not in close_list:
-            New_G = G + map[x + 1][y + 1]
+        if x + 1 < m and y + 1 < n and (x + 1, y + 1) not in close_list:
+            if q1[x] == q2[y]:
+                score = 1
+            else:
+                score = error
+            New_G = G + score
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - (y + 1))
+            New_H = New_H // 2
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y + 1))
             open_list.append(New_tuple, pos)
@@ -124,11 +132,8 @@ def A_star_pairwise(pos_start, pos_end, map):
         close_list.append(pos)
 
 
-def A_star_three(pos_start, pos_end, map):
+def A_star_three(pos_start, pos_end, q1, q2, q0, m, n, l):
 
-    map_width = len(map[0][0])
-    map_height = len(map[0])
-    map_long = len(map)
     open_list = order_seq_three()
     close_list = []
     open_list.append((0, 0, pos_start))
@@ -147,45 +152,104 @@ def A_star_three(pos_start, pos_end, map):
         y = temp_tuple[2][1]
         z = temp_tuple[2][2]
 
-        if x + 1 < map_height and (x + 1, y, z) not in close_list:
-            New_G = G + map[x + 1][y][z]
+        gap = 3
+        error = 4
+        s = 4
+
+        if x + 1 < m and (x + 1, y, z) not in close_list:
+            if z > l - 2 or y > n - 2:
+                continue
+            if q2[y] == q0[z]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - y) + abs(pos_end[2] - z)
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y, z))
             open_list.append(New_tuple, pos)
-        if y + 1 < map_width and (x, y + 1, z) not in close_list:
-            New_G = G + map[x][y + 1][z]
+        if y + 1 < n and (x, y + 1, z) not in close_list:
+            if x > m - 2 or z > l - 2:
+                continue
+            if q1[x] == q0[z]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - x) + abs(pos_end[1] - (y + 1)) + abs(pos_end[2] - z)
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x, y + 1, z))
             open_list.append(New_tuple, pos)
-        if z + 1 < map_long and (x, y, z + 1) not in close_list:
-            New_G = G + map[x][y][z + 1]
+        if z + 1 < l and (x, y, z + 1) not in close_list:
+            if x > m - 2 or y > n - 2:
+                continue
+            if q2[y] == q1[x]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - x) + abs(pos_end[1] - y) + abs(pos_end[2] - (z + 1))
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x, y , z + 1))
             open_list.append(New_tuple, pos)
-        if x + 1 < map_height and y + 1 < map_width and (x + 1, y + 1, z) not in close_list:
-            New_G = G + map[x + 1][y + 1][z]
+        if x + 1 < m and y + 1 < n and (x + 1, y + 1, z) not in close_list:
+            if z > l - 2:
+                continue
+            if q2[y] == q1[x]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - (y + 1)) + abs(pos_end[2] - z)
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y + 1, z))
             open_list.append(New_tuple, pos)
-        if x + 1 < map_height and z + 1 < map_long and (x + 1, y, z + 1) not in close_list:
-            New_G = G + map[x + 1][y][z + 1]
+        if x + 1 < m and z + 1 < l and (x + 1, y, z + 1) not in close_list:
+            if y > n - 2:
+                continue
+            if q1[x] == q0[z]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - y) + abs(pos_end[2] - (z + 1))
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y, z + 1))
             open_list.append(New_tuple, pos)
-        if z + 1 < map_long and y + 1 < map_width and (x, y + 1, z + 1) not in close_list:
-            New_G = G + map[x][y + 1][z + 1]
+        if z + 1 < l and y + 1 < n and (x, y + 1, z + 1) not in close_list:
+            if x > m - 2:
+                continue
+            if q2[y] == q0[z]:
+                score = 0
+            else:
+                score = error
+            New_G = G + gap + gap + score
             New_H = abs(pos_end[0] - x) + abs(pos_end[1] - (y + 1)) + abs(pos_end[2] - (z + 1))
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x, y + 1, z + 1))
             open_list.append(New_tuple, pos)
-        if x + 1 < map_height and y + 1 < map_width and z + 1 < map_long and (x + 1, y + 1, z + 1) not in close_list:
-            New_G = G + map[x + 1][y + 1][z + 1]
+        if x + 1 < m and y + 1 < n and z + 1 < l and (x + 1, y + 1, z + 1) not in close_list:
+            if q2[y] == q1[x]:
+                score_xy = 0
+            else:
+                score_xy = error
+            if q0[z] == q1[x]:
+                score_xz = 0
+            else:
+                score_xz = error
+            if q2[y] == q0[z]:
+                score_yz = 0
+            else:
+                score_yz = error
+            New_G = G + score_xy + score_xz + score_yz
             New_H = abs(pos_end[0] - (x + 1)) + abs(pos_end[1] - (y + 1)) + abs(pos_end[2] - (z + 1))
+            New_H = New_H * s
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y + 1, z + 1))
             open_list.append(New_tuple, pos)
@@ -214,8 +278,10 @@ def path_parser_three(food_pos,last_dict):
 
 class A_star:
 
-    def get_path_pairwise(self, map, m, n):
-        flag, dict= A_star_pairwise((0, 0), (m, n), map)
+    def get_path_pairwise(self, q1, q2):
+        m = len(q1)
+        n = len(q2)
+        flag, dict= A_star_pairwise((0, 0), (m, n), q1, q2, m + 1, n + 1)
         assert flag, "open list is empty"
         path_list = path_parser_pairwise((m, n), dict)
 
@@ -229,18 +295,20 @@ class A_star:
                 path.append(2)
         return path
 
-    def get_path_three(self, map, m, n, l):
-        flag, dict = A_star_three((0, 0, 0), (m, n, l), map)
+    def get_path_three(self, q1, q2, q0):
+        m = len(q1)
+        n = len(q2)
+        l = len(q0)
+        flag, dict = A_star_three((0, 0, 0), (m, n, l), q1, q2, q0, m+1, n+1, l+1)
         assert flag, "open list is empty"
         path_list = path_parser_three((m, n, l), dict)
-
         path = []
         for i in range(len(path_list) - 1):
             x1 = path_list[i][0]
             x2 = path_list[i + 1][0]
             y1 = path_list[i][1]
             y2 = path_list[i + 1][1]
-            z1 = path_list[i + 1][2]
+            z1 = path_list[i][2]
             z2 = path_list[i + 1][2]
             if x1 != x2 and y1 != y2 and z1 != z2:
                 path.append(0)
@@ -259,19 +327,12 @@ class A_star:
         return path
 
     def Align_pairwise(self, q1, q2):
-        m = len(q1)
-        n = len(q2)
-        search_map = get_map_pairwise(q1, q2)
-        path = self.get_path_pairwise(search_map, m, n)
+        path = self.get_path_pairwise(q1, q2)
         q_1, q_2 = get_query_from_path_pairwise(path, q1, q2)
         return q_1, q_2
 
     def Align_three(self, q1, q2, q0):
-        m = len(q1)
-        n = len(q2)
-        l = len(q0)
-        search_map = get_map_three(q1, q2, q0)
-        path = self.get_path_three(search_map, m, n, l)
+        path = self.get_path_three(q1, q2, q0)
         q_1, q_2, q_0 = get_query_from_path_three(path, q1, q2, q0)
         return q_1, q_2 ,q_0
 
