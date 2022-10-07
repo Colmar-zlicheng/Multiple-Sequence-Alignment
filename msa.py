@@ -85,7 +85,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     data_dir ={}
     data_dir["root"] = "./data"
-    data_dir["database"] = "MSA_database_min.txt"
+    data_dir["database"] = "MSA_database.txt"
     data_dir["query"] = "MSA_query.txt"
     mode = args.mode
 
