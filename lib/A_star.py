@@ -117,7 +117,7 @@ def A_star_pairwise(pos_start, pos_end, q1, q2, m, n):
             New_F = New_G + New_H
             New_tuple = (New_F, New_G, (x + 1, y))
             open_list.append(New_tuple, pos)
-        if x + 1 < m and y + 1 < n and (x + 1, y + 1) not in close_list:
+        if x + 1 < m and y + 1 < n and (x + 1, y + 1) not in close_list: # lower right
             if q1[x] == q2[y]:
                 score = 1
             else:

@@ -1,0 +1,5 @@
+pairwise: Running time: 5269.087377309799 Seconds
+interation = 1000
+
+three: Running time: 23430.193815731 Seconds
+interation = 1000

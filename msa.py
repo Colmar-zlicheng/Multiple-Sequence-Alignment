@@ -81,7 +81,7 @@ def MSA(data_dir, mode):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", type=str, default="A_star",choices=["DP", "A_star", "genetic"])
+    parser.add_argument("--mode", type=str, default="DP",choices=["DP", "A_star", "genetic"])
     args = parser.parse_args()
     data_dir ={}
     data_dir["root"] = "./data"

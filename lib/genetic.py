@@ -1,6 +1,5 @@
-import numpy as np
 from tqdm import tqdm
-from lib.utils import compute_cost, get_query_from_path_pairwise, get_query_from_path_three
+from lib.utils import compute_cost
 from lib.external import genetic_main
 
 

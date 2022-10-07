@@ -1141,7 +1141,7 @@ def genetic_main(dim, q):
 
     # ----------checking data-----------#
 
-    iteration = 100
+    iteration = 10000
 
     CRO_count = 0
     CRO_limit = 400000
