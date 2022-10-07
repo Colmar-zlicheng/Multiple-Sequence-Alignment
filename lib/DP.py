@@ -160,7 +160,6 @@ class DP:
         q2_list = []
         cost_list = []
         for i in tqdm(range(len(database))):
-
             for j in range(i+1, len(database)):
                 tempo_list = []
                 q_1_0, q_1_1, q_2 = self.Align_three(database[i], database[j], query)

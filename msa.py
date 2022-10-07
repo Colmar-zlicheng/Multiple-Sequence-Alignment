@@ -50,7 +50,7 @@ def MSA(data_dir, mode):
         q_2_pairwise.append(q_2)
         cost_pairwise.append(cost)
 
-    save_pairwise_dir = './result/pairwise_' + mode
+    save_pairwise_dir = './result/pairwise_' + mode + '.txt'
     print("Saving result of pairwise sequence alignment with ", mode)
     with open(save_pairwise_dir, 'w') as f:
         for j in range(len(cost_pairwise)):
@@ -69,7 +69,7 @@ def MSA(data_dir, mode):
         q_2_three.append(q_2)
         cost_three.append(cost)
 
-    save_three_dir = './result/three_' + mode
+    save_three_dir = './result/three_' + mode + '.txt'
     print("Saving result of three sequence alignment with ", mode)
     with open(save_three_dir, 'w') as f:
         for j in range(len(cost_three)):
@@ -81,11 +81,11 @@ def MSA(data_dir, mode):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", type=str, default="DP",choices=["DP", "A_star", "genetic"])
+    parser.add_argument("--mode", type=str, default="A_star",choices=["DP", "A_star", "genetic"])
     args = parser.parse_args()
     data_dir ={}
     data_dir["root"] = "./data"
-    data_dir["database"] = "MSA_database.txt"
+    data_dir["database"] = "MSA_database_min.txt"
     data_dir["query"] = "MSA_query.txt"
     mode = args.mode
 
@@ -93,6 +93,6 @@ if __name__ == "__main__":
     MSA(data_dir, mode)
     end = time.time()
     print('Running time: %s Seconds' % (end - start))
-    save_time_dir = './result/time_' + mode
+    save_time_dir = './result/time_' + mode + '.txt'
     with open(save_time_dir, 'w') as f:
         f.write('Running time: %s Seconds' % (end - start))
