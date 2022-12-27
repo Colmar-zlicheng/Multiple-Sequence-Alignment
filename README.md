@@ -5,7 +5,7 @@ Each algorithm support pairwise sequence alignment and three sequence alginment.
 
 ### dataset
 
-```shell
+```
 data
 ├── MSA_database.txt
 └── MSA_query.txt
