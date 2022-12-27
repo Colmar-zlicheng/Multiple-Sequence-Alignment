@@ -1,6 +1,8 @@
 # Multiple-Sequence-Alignment
 
 ## DP, A*, genetic for MSA
+Project 1 for CS3317-2@SJTU
+
 Each algorithm support pairwise sequence alignment and three sequence alginment.
 
 ### dataset
